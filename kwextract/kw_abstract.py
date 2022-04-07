@@ -37,16 +37,23 @@ class KWAbstract:
 
         self.dtm = sp.sparse.coo_matrix(([x[0] for x in dat], ([x[1] for x in dat],[x[2] for x in dat],)), shape=(len(self.term_frequencies), len(self.vocab))).tocsr()
 
-    def __call__(self,  df, groups, n=10):
-        self.df = df
-        self.groups = groups
+    def __call__(self,  df, groups=None, n=10):
+
+        if isinstance(df, dict):
+            self.df = pd.DataFrame(df.items())
+            self.df.columns = ["key", "token"]
+            self.groups = "key"
+        else:
+            self.df = df
+            assert groups is not None, "If input is pd.Dataframe , specify the document id column to group by"
+            self.groups = groups
 
         if self.ngrams is not None:
             ngrams = self.df.groupby(groups)["token"].apply(lambda x: self.create_ngrams(x.tolist(), add_ngrams=self.ngrams)).to_dict()
         if  len(self.pos_pattern) > 0:
             pos = self.df.groupby(groups)[["token","POS"]].apply(lambda x: self.create_patterns(list(x.to_records()), self.pos_pattern)).to_dict()
 
-        self.texts = {k: list(v)[0] for k, v in
+        self.texts = {k: sum(list(v)[0],[]) for k, v in
                       list(pd.DataFrame((self.df.groupby(self.groups)["token"].apply(list))).iterrows())}
         if self.ngrams is not None:
             self.texts = {k: self.texts[k] + ngrams[k] for k in self.texts.keys()}

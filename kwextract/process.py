@@ -4,8 +4,11 @@ import re
 
 class SpacyProcess:
     def __init__(self):
-        self.nlp = spacy.load("de_core_news_sm")
-        self.nlp.disable_pipes(["ner"])
+        self. nlp = spacy.load("de_core_news_sm",
+                     disable=['tok2vec', 'ner', 'attribute_ruler', 'lemmatizer', 'morphologizer', ])
+
+        # self.nlp.add_pipe('sentencizer')
+
 
     def __call__(self, *args, **kwargs):
         return self.process(*args, **kwargs)
