@@ -40,9 +40,7 @@ class KWAbstract:
     def __call__(self,  df, groups=None, n=10):
 
         if isinstance(df, dict):
-            self.df = pd.DataFrame(df.items())
-            self.df.columns = ["key", "token"]
-            self.groups = "key"
+            return self.call_dict(df, n=n)
         else:
             self.df = df
             assert groups is not None, "If input is pd.Dataframe , specify the document id column to group by"
@@ -60,5 +58,13 @@ class KWAbstract:
         if len(self.pos_pattern) > 0:
             self.texts = {k: self.texts[k] + pos[k] for k in self.texts.keys()}
 
+        self.create_dtm(self.texts)
+        return self.keywords(n=n)
+
+    def call_dict(self, texts, n=10):
+        self.texts = texts
+        self.df = pd.DataFrame(texts.items())
+        self.df.columns = ["key", "token"]
+        self.groups = "key"
         self.create_dtm(self.texts)
         return self.keywords(n=n)

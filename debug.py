@@ -23,6 +23,4 @@ from kwextract import TFIDF, LLH
 # kw(df, groups=["key"],n=100)
 
 kw = TFIDF()
-kw.create_dtm(content)
-kw.texts = content
-kw.keywords(10)
+kw.call_dict(content, 10)
