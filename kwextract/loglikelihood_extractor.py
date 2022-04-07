@@ -3,9 +3,10 @@ import scipy as sp
 from .kw_abstract import KWAbstract
 
 class LLH(KWAbstract):
-    def __init__(self, threshold=None, **kwargs):
+    def __init__(self, reference, threshold=None, **kwargs):
         super(LLH, self).__init__(**kwargs)
         self.threshold = threshold
+        self.reference = reference
 
     def _ll(self, a, b, n):
 
@@ -33,3 +34,10 @@ class LLH(KWAbstract):
     def keywords(self, n=None):
         return {k: self.log_likelihood(k, n=n) for k in self.texts.keys() if k != "reference"}
 
+    def call_dict(self, texts: dict, n=10):
+        self.texts = texts
+        self.texts["reference"] = self.reference
+        if self.ngrams is not None:
+            self.texts = {k:v+self.create_ngrams(v, add_ngrams=self.ngrams) for k,v in self.texts.items()}
+        self.create_dtm(self.texts)
+        return self.keywords(n=n)
