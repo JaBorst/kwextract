@@ -8,5 +8,5 @@ setup(
     license='',
     author='Janos Borst',
     author_email='borst@informatik.uni-leizpig.de',
-    description='A simple Keyword Extractor for differential Analysis'
+    description='A simple Keyword Extractor using differential Analysis'
 )
