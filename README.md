@@ -4,7 +4,7 @@ Easy to use Keyword extractor using differential analysis.
 Install with:
 
 ```bash
-pip install git+
+pip install git+https://github.com/JaBorst/kwextract
 ```
 
 ## Usage
